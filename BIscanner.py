@@ -1,6 +1,7 @@
 ###THIS IS FREE SOFTWARE. YOU SHOULD NEVER PAY FOR IT.
 ###DISCLAIMER: I am in no way affiliated with Binance, use at your own risk. There are no warranties or guarantees expressed or implied. You assume all responsibility and liability.
 
+from os import read
 import time
 from time import sleep
 import sys
@@ -10,7 +11,9 @@ from twisted.internet import reactor
 from colorama import init, Fore, Back, Style
 import datetime as dt
 
-import BIconfig
+from BIconfigparser import readConfig
+
+configs = readConfig('BIconfig.txt')
 
 PUBLIC_API_KEY = ''																	#API KEYS FROM BINANCE.COM (NOT REQUIRED!)
 PRIVATE_API_KEY = ''																#API KEYS FROM BINANCE.COM (NOT REQUIRED!)
