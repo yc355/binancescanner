@@ -10,10 +10,7 @@ from binance.client import Client
 from twisted.internet import reactor
 from colorama import init, Fore, Back, Style
 import datetime as dt
-
 from BIconfigparser import readConfig
-
-configs = readConfig('BIconfig.txt')
 
 PUBLIC_API_KEY = ''																	#API KEYS FROM BINANCE.COM (NOT REQUIRED!)
 PRIVATE_API_KEY = ''																#API KEYS FROM BINANCE.COM (NOT REQUIRED!)
@@ -32,6 +29,9 @@ FIVE_M_PRICE_DIFFERENCE_THRESHOLD = 3.0												#5M PRICE DIFFERENCE IN PERCE
 TEN_M_PRICE_DIFFERENCE_THRESHOLD = 3.5												#10M PRICE DIFFERENCE IN PERCENTAGE THRESHOLD
 FIFTEEN_M_PRICE_DIFFERENCE_THRESHOLD = 4.0											#15M PRICE DIFFERENCE IN PERCENTAGE THRESHOLD
 VOLUME_DIFFERENCE_THRESHOLD = 1.0													#VOLUME DIFFERENCE IN PERCENTAGE THRESHOLD
+
+configs = readConfig('BIconfig.txt')
+
 
 T = dt.datetime.now()																#START TIME (DO NOT CHANGE)
 COLOUR_CODED_VALUES = (
@@ -97,6 +97,11 @@ def difference_to_color(difference):
 		print(Fore.RED)
 	else:
 		print(Fore.WHITE)
+
+def printOutput(flag=None, sym=None, diff=None):
+	symPrint = "SYM: " + str(sym)
+	diffPrint = "DIFF: " + str(round(diff, 1))
+	print(flag, symPrint, diffPrint, sep=" || ")
 		
 def process_message(msg):
 	global first_run_flag
@@ -150,126 +155,138 @@ def process_message(msg):
 						if((ct - stored_currency.ten_sec_time_stamp) >= 10):
 							ten_second_price_diff = ((x.bid_price - stored_currency.ten_sec_start_bid_price) / stored_currency.ten_sec_start_bid_price) * 100
 							if(ten_second_price_diff > TEN_S_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "10S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								ten_second_pDiff = "DIFF: " + str(round(ten_second_price_diff, 1))
 								difference_to_color(ten_second_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, ten_second_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol),sep = "  ||  ")
 								else:
-									print(flag, sym, ten_second_pDiff,sep = "  ||  ")
+									printOutput(
+										flag="10S FLAG!",
+										sym=stored_currency.symbol,
+										diff=ten_second_price_diff
+									)
 							stored_currency.ten_sec_start_bid_price = x.bid_price
 							stored_currency.ten_sec_time_stamp = ct
 							
 						if((ct - stored_currency.fifteen_sec_time_stamp) >= 15):
 							fifteen_second_price_diff = ((x.bid_price - stored_currency.fifteen_sec_start_bid_price) / stored_currency.fifteen_sec_start_bid_price) * 100
 							if(fifteen_second_price_diff > FIFTEEN_S_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "15S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
 								fifteen_second_pDiff = "DIFF: " + str(round(fifteen_second_price_diff, 1))
 								difference_to_color(fifteen_second_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, fifteen_second_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, fifteen_second_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="15S FLAG!",
+										sym=stored_currency.symbol,
+										diff=fifteen_second_pDiff
+									)
 							stored_currency.fifteen_sec_start_bid_price = x.bid_price
 							stored_currency.fifteen_sec_time_stamp = ct
 							
 						if((ct - stored_currency.twenty_sec_time_stamp) >= 20):
 							twenty_second_price_diff = ((x.bid_price - stored_currency.twenty_sec_start_bid_price) / stored_currency.twenty_sec_start_bid_price) * 100
 							if(twenty_second_price_diff > TWENTY_S_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "20S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								twenty_second_pDiff = "DIFF: " + str(round(twenty_second_price_diff, 1))
 								difference_to_color(twenty_second_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, twenty_second_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, twenty_second_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="20S FLAG!",
+										sym=stored_currency.symbol,
+										diff=twenty_second_price_diff
+									)
 							stored_currency.twenty_sec_start_bid_price = x.bid_price
 							stored_currency.twenty_sec_time_stamp = ct
 						
 						if((ct - stored_currency.thirty_sec_time_stamp) >= 30):
 							thirty_second_price_diff = ((x.bid_price - stored_currency.thirty_sec_start_bid_price) / stored_currency.thirty_sec_start_bid_price) * 100
 							if(thirty_second_price_diff > THIRTY_S_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "30S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								thirty_second_pDiff = "DIFF: " + str(round(thirty_second_price_diff, 1))
 								difference_to_color(thirty_second_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, thirty_second_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, thirty_second_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="30S FLAG!",
+										sym=stored_currency.symbol,
+										diff=thirty_second_price_diff
+									)
 							stored_currency.thirty_sec_start_bid_price = x.bid_price
 							stored_currency.thirty_sec_time_stamp = ct
 						
 						if((ct - stored_currency.one_min_time_stamp) >= 60):
 							one_min_price_diff = ((x.bid_price - stored_currency.one_min_start_bid_price) / stored_currency.one_min_start_bid_price) * 100
 							if(one_min_price_diff > ONE_M_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "60S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								one_min_pDiff = "DIFF: " + str(round(one_min_price_diff, 1))
 								difference_to_color(one_min_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, one_min_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, one_min_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="60S FLAG!",
+										sym=stored_currency.symbol,
+										diff=one_min_price_diff
+									)
 							stored_currency.one_min_start_bid_price = x.bid_price
 							stored_currency.one_min_time_stamp = ct
 						
 						if((ct - stored_currency.two_min_time_stamp) >= 120):
 							two_min_price_diff = ((x.bid_price - stored_currency.two_min_start_bid_price) / stored_currency.two_min_start_bid_price) * 100
 							if(two_min_price_diff > TWO_M_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "120S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								two_min_pDiff = "DIFF: " + str(round(two_min_price_diff, 1))
 								difference_to_color(two_min_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, two_min_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, two_min_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="120S FLAG!",
+										sym=stored_currency.symbol,
+										diff=two_min_price_diff
+									)
 							stored_currency.two_min_start_bid_price = x.bid_price
 							stored_currency.two_min_time_stamp = ct
 						
 						if((ct - stored_currency.five_min_time_stamp) >= 300):
 							five_min_price_diff = ((x.bid_price - stored_currency.five_min_start_bid_price) / stored_currency.five_min_start_bid_price) * 100
 							if(five_min_price_diff > FIVE_M_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "300S FLAG!"
 								sym = "SYM: " + str(stored_currency.symbol)
 								five_min_pDiff = "DIFF: " + str(round(five_min_price_diff, 1))
 								difference_to_color(five_min_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, five_min_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, five_min_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="300S FLAG!",
+										sym=stored_currency.symbol,
+										diff=five_min_price_diff
+									)
 							stored_currency.five_min_start_bid_price = x.bid_price
 							stored_currency.five_min_time_stamp = ct
 							
 						if((ct - stored_currency.ten_min_time_stamp) >= 600):
 							ten_min_price_diff = ((x.bid_price - stored_currency.ten_min_start_bid_price) / stored_currency.ten_min_start_bid_price) * 100
 							if(ten_min_price_diff > TEN_M_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "600S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								ten_min_pDiff = "DIFF: " + str(round(ten_min_price_diff, 1))
 								difference_to_color(ten_min_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, ten_min_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
 								else:
-									print(flag, sym, ten_min_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="600S FLAG!",
+										sym=stored_currency.symbol,
+										diff=ten_min_price_diff
+									)
 							stored_currency.ten_min_start_bid_price = x.bid_price
 							stored_currency.ten_min_time_stamp = ct
 							
 						if((ct - stored_currency.fifteen_min_time_stamp) >= 900):
 							fifteen_min_price_diff = ((x.bid_price - stored_currency.fifteen_min_start_bid_price) / stored_currency.fifteen_min_start_bid_price) * 100
 							if(fifteen_min_price_diff > FIFTEEN_M_PRICE_DIFFERENCE_THRESHOLD):
-								flag = "900S FLAG!"
-								sym = "SYM: " + str(stored_currency.symbol)
-								fifteen_min_pDiff = "DIFF: " + str(round(fifteen_min_price_diff, 1))
 								difference_to_color(fifteen_min_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, fifteen_min_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol),sep = "  ||  ")
 								else:
-									print(flag, sym, fifteen_min_pDiff, sep = "  ||  ")
+									printOutput(
+										flag="900S FLAG!",
+										sym=stored_currency.symbol,
+										diff=fifteen_min_price_diff
+									)
 							stored_currency.fifteen_min_start_bid_price = x.bid_price
 							stored_currency.fifteen_min_time_stamp = ct
 							
