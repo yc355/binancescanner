@@ -10,6 +10,8 @@ from twisted.internet import reactor
 from colorama import init, Fore, Back, Style
 import datetime as dt
 
+import BIconfig
+
 PUBLIC_API_KEY = ''																	#API KEYS FROM BINANCE.COM (NOT REQUIRED!)
 PRIVATE_API_KEY = ''																#API KEYS FROM BINANCE.COM (NOT REQUIRED!)
 TRADING_VIEW_LINK = 0																#ENABLE TRADING VIEW LINK (DISABLED BY DEFAULT)
