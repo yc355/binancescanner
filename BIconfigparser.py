@@ -1,6 +1,6 @@
-def readConfig(filename):
+def readConfig(filepath):
     dictionary =  {}
-    with open(filename, "r") as f:
+    with open(filepath, "r") as f:
         for line in f:
             parsed_param = line.strip().split("=")
             if len(parsed_param) == 2:

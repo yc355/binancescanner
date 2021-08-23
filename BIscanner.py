@@ -2,6 +2,7 @@
 ###DISCLAIMER: I am in no way affiliated with Binance, use at your own risk. There are no warranties or guarantees expressed or implied. You assume all responsibility and liability.
 
 from os import read
+import os
 import time
 from time import sleep
 import sys
@@ -30,8 +31,9 @@ TEN_M_PRICE_DIFFERENCE_THRESHOLD = 3.5												#10M PRICE DIFFERENCE IN PERCE
 FIFTEEN_M_PRICE_DIFFERENCE_THRESHOLD = 4.0											#15M PRICE DIFFERENCE IN PERCENTAGE THRESHOLD
 VOLUME_DIFFERENCE_THRESHOLD = 1.0													#VOLUME DIFFERENCE IN PERCENTAGE THRESHOLD
 
-configs = readConfig('BIconfig.txt')
-
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
+configs = readConfig(os.path.join(__location__, 'BIconfig.txt'))
 
 T = dt.datetime.now()																#START TIME (DO NOT CHANGE)
 COLOUR_CODED_VALUES = (
