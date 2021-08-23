@@ -98,15 +98,27 @@ def difference_to_color(difference):
 	else:
 		print(Fore.WHITE)
 
-def printOutput(flag=None, sym=None, diff=None):
-	symPrint = "SYM: " + str(sym)
-	diffPrint = "DIFF: " + str(round(diff, 1))
-	print(flag, symPrint, diffPrint, sep=" || ")
-		
+def printOutput(flag=None, sym=None, diff=None, data=None):
+	symPrint = "TICKER: " + str(sym)
+	diffPrint = "FLAG DIFF: " + str(int(round(diff, 2) * 100)) + "%"
+	dailyChangePrint = "DAILY Δ: " + str(data.percent_change) + "%"
+	dailyDollarVolPrint = "PENDING BTCUSDT PRICE"
+	dollarPricePrint = "PENDING BTCUSDT PRICE"
+	if latest_btc_price:
+		dailyDollarVolPrint = "DAILY VOL: $" + str(format(round(data.volume * latest_btc_price), ",d"))
+		dollarPricePrint = "PRICE: $" + str(round(data.bid_price * latest_btc_price, 4))
+	timestampPrint = "TIMESTAMP: " + str(dt.datetime.now())
+	print(flag, symPrint, diffPrint, dailyDollarVolPrint, dailyChangePrint, dollarPricePrint, timestampPrint, sep=" || ")
+
 def process_message(msg):
 	global first_run_flag
 	for currency in msg:
 		x = currency_container(currency)
+
+		if x.symbol == 'BTCUSDT':
+			global latest_btc_price
+			latest_btc_price = x.bid_price
+		
 		if(x.symbol[-len(PAIRS):] == PAIRS): #only gets specified pairs
 			if(first_run_flag == 0):
 				price_list.append(x) 
@@ -162,7 +174,8 @@ def process_message(msg):
 									printOutput(
 										flag="10S FLAG!",
 										sym=stored_currency.symbol,
-										diff=ten_second_price_diff
+										diff=ten_second_price_diff,
+										data = x
 									)
 							stored_currency.ten_sec_start_bid_price = x.bid_price
 							stored_currency.ten_sec_time_stamp = ct
@@ -170,7 +183,6 @@ def process_message(msg):
 						if((ct - stored_currency.fifteen_sec_time_stamp) >= 15):
 							fifteen_second_price_diff = ((x.bid_price - stored_currency.fifteen_sec_start_bid_price) / stored_currency.fifteen_sec_start_bid_price) * 100
 							if(fifteen_second_price_diff > FIFTEEN_S_PRICE_DIFFERENCE_THRESHOLD):
-								fifteen_second_pDiff = "DIFF: " + str(round(fifteen_second_price_diff, 1))
 								difference_to_color(fifteen_second_price_diff)
 								if(TRADING_VIEW_LINK == 1):
 									print(flag, sym, fifteen_second_pDiff, 'https://www.tradingview.com/chart/?symbol=Binance:'+str(stored_currency.symbol), sep = "  ||  ")
@@ -178,7 +190,8 @@ def process_message(msg):
 									printOutput(
 										flag="15S FLAG!",
 										sym=stored_currency.symbol,
-										diff=fifteen_second_pDiff
+										diff=fifteen_second_price_diff,
+										data = x
 									)
 							stored_currency.fifteen_sec_start_bid_price = x.bid_price
 							stored_currency.fifteen_sec_time_stamp = ct
@@ -193,7 +206,8 @@ def process_message(msg):
 									printOutput(
 										flag="20S FLAG!",
 										sym=stored_currency.symbol,
-										diff=twenty_second_price_diff
+										diff=twenty_second_price_diff,
+										data = x
 									)
 							stored_currency.twenty_sec_start_bid_price = x.bid_price
 							stored_currency.twenty_sec_time_stamp = ct
@@ -208,7 +222,8 @@ def process_message(msg):
 									printOutput(
 										flag="30S FLAG!",
 										sym=stored_currency.symbol,
-										diff=thirty_second_price_diff
+										diff=thirty_second_price_diff,
+										data = x
 									)
 							stored_currency.thirty_sec_start_bid_price = x.bid_price
 							stored_currency.thirty_sec_time_stamp = ct
@@ -223,7 +238,8 @@ def process_message(msg):
 									printOutput(
 										flag="60S FLAG!",
 										sym=stored_currency.symbol,
-										diff=one_min_price_diff
+										diff=one_min_price_diff,
+										data = x
 									)
 							stored_currency.one_min_start_bid_price = x.bid_price
 							stored_currency.one_min_time_stamp = ct
@@ -238,7 +254,8 @@ def process_message(msg):
 									printOutput(
 										flag="120S FLAG!",
 										sym=stored_currency.symbol,
-										diff=two_min_price_diff
+										diff=two_min_price_diff,
+										data = x
 									)
 							stored_currency.two_min_start_bid_price = x.bid_price
 							stored_currency.two_min_time_stamp = ct
@@ -255,7 +272,8 @@ def process_message(msg):
 									printOutput(
 										flag="300S FLAG!",
 										sym=stored_currency.symbol,
-										diff=five_min_price_diff
+										diff=five_min_price_diff,
+										data = x
 									)
 							stored_currency.five_min_start_bid_price = x.bid_price
 							stored_currency.five_min_time_stamp = ct
@@ -270,7 +288,8 @@ def process_message(msg):
 									printOutput(
 										flag="600S FLAG!",
 										sym=stored_currency.symbol,
-										diff=ten_min_price_diff
+										diff=ten_min_price_diff,
+										data = x
 									)
 							stored_currency.ten_min_start_bid_price = x.bid_price
 							stored_currency.ten_min_time_stamp = ct
@@ -285,7 +304,8 @@ def process_message(msg):
 									printOutput(
 										flag="900S FLAG!",
 										sym=stored_currency.symbol,
-										diff=fifteen_min_price_diff
+										diff=fifteen_min_price_diff,
+										data = x
 									)
 							stored_currency.fifteen_min_start_bid_price = x.bid_price
 							stored_currency.fifteen_min_time_stamp = ct
