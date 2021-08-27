@@ -132,7 +132,7 @@ def process_message(msg):
 						priceDiff = ((x.bid_price - stored_currency.bid_price) / stored_currency.bid_price) * 100
 						volDiff = ((x.volume - stored_currency.volume) / stored_currency.volume) * 100
 						
-						if filter(configs=configs, vol=x.volume, price=x.bid_price, btc_price=latest_btc_price):
+						if filter(configs=configs, vol=x.volume, price=x.bid_price, change_pct=x.percent_change, btc_price=latest_btc_price):
 							if(priceDiff > ONE_S_PRICE_DIFFERENCE_THRESHOLD and volDiff > VOLUME_DIFFERENCE_THRESHOLD and x.volume > MINIMUM_VOLUME_THRESHOLD):
 								flag = "PRICE AND VOL!"
 								sym = "SYM: " + str(stored_currency.symbol)
